@@ -691,11 +691,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   musuhPrefab: {fileID: 4319433560472128034, guid: ad22c9a3678df844080ac3138ec821d2, type: 3}
-  kepalaKereta: {fileID: 1917353304}
-  jumlahMusuhAwal: 3
+  kepalaKereta: {fileID: 1497877195}
+  jumlahMusuhAwal: 2
   tambahPerWave: 3
-  jarakSpawn: 30
-  jarakSamping: 15
+  minJarakSamping: 20
+  maxJarakSamping: 35
+  minJarakBelakang: -80
+  maxJarakBelakang: -115
 --- !u!4 &1957133262
 Transform:
   m_ObjectHideFlags: 0
@@ -705,7 +707,7 @@ Transform:
   m_GameObject: {fileID: 1957133260}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.95625687, y: -0.06360483, z: -4.709357}
+  m_LocalPosition: {x: 25, y: -0.06360483, z: -54.9}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -768,6 +770,63 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 32c17cd418e57d5488c140b597edc152, type: 3}
+--- !u!1001 &2090776406
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: -8679921383154817045, guid: e03b14bf4d5f89f47995beaca25e354c, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0.26065826
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: e03b14bf4d5f89f47995beaca25e354c, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.80300516
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: e03b14bf4d5f89f47995beaca25e354c, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -16.528646
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: e03b14bf4d5f89f47995beaca25e354c, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: e03b14bf4d5f89f47995beaca25e354c, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: e03b14bf4d5f89f47995beaca25e354c, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: e03b14bf4d5f89f47995beaca25e354c, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: e03b14bf4d5f89f47995beaca25e354c, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: e03b14bf4d5f89f47995beaca25e354c, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: e03b14bf4d5f89f47995beaca25e354c, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: e03b14bf4d5f89f47995beaca25e354c, type: 3}
+      propertyPath: m_Name
+      value: senjata roket
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: e03b14bf4d5f89f47995beaca25e354c, type: 3}
 --- !u!1 &173986955123064636
 GameObject:
   m_ObjectHideFlags: 0
@@ -799,6 +858,10 @@ PrefabInstance:
       propertyPath: musuh
       value: 
       objectReference: {fileID: 2502845837637516191, guid: ad22c9a3678df844080ac3138ec821d2, type: 3}
+    - target: {fileID: 3639187727710313674, guid: eb626257558084f4c8ab8abad276debb, type: 3}
+      propertyPath: range
+      value: 90
+      objectReference: {fileID: 0}
     - target: {fileID: 3639187727710313674, guid: eb626257558084f4c8ab8abad276debb, type: 3}
       propertyPath: fireRate
       value: 0.1
@@ -1161,3 +1224,4 @@ SceneRoots:
   - {fileID: 1676875727609549603}
   - {fileID: 1917353304}
   - {fileID: 1957133262}
+  - {fileID: 2090776406}

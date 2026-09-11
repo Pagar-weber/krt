@@ -1,4 +1,4 @@
-using UnityEngine;
+ using UnityEngine;
 
 public class LookAtMusuh : MonoBehaviour
 {
@@ -7,6 +7,14 @@ public class LookAtMusuh : MonoBehaviour
 
     public float fireRate = 0.5f;
     public float range = 30f;
+
+    [Header("Pengaturan Kecepatan Putar Turret")]
+    [Tooltip("Kecepatan putar turret (derajat/detik). Makin besar nilainya, makin cepat nengok ke musuh baru.")]
+    public float rotationSpeed = 500f; 
+
+    [Header("Pengaturan Peluru")]
+    [Tooltip("Kecepatan meluncur peluru saat ditembakkan.")]
+    public float bulletSpeed = 30f;
 
     private float nextFireTime;
     private Transform target;
@@ -25,7 +33,13 @@ public class LookAtMusuh : MonoBehaviour
             if (arah != Vector3.zero)
             {
                 Quaternion targetRotation = Quaternion.LookRotation(arah);
-                transform.rotation = targetRotation;
+
+                // Memutar turret secara bertahap/halus sesuai rotationSpeed
+                transform.rotation = Quaternion.RotateTowards(
+                    transform.rotation, 
+                    targetRotation, 
+                    rotationSpeed * Time.deltaTime
+                );
             }
 
             // Nembak
@@ -63,10 +77,20 @@ public class LookAtMusuh : MonoBehaviour
 
     void Tembak()
     {
-        Instantiate(
+        if (bulletPrefab == null || firePoint == null) return;
+
+        // Spawn peluru
+        GameObject bullet = Instantiate(
             bulletPrefab,
             firePoint.position,
             firePoint.rotation
         );
+
+        // Memberikan dorongan kecepatan ke peluru (jika prefab peluru pakai Rigidbody)
+        Rigidbody rb = bullet.GetComponent<Rigidbody>();
+        if (rb != null)
+        {
+            rb.velocity = firePoint.forward * bulletSpeed;
+        }
     }
 }
