@@ -22,6 +22,9 @@ public class GroundSpawner : MonoBehaviour
     [Header("Jarak Stasiun Keluar")]
     public float jarakKeluarStasiun = 250f;
 
+    [Header("Cactus")]
+    public CactusSpawner cactusSpawner;
+
     private int groundLewat = 0;
 
     private bool stasiunBerjalan = false;
@@ -36,6 +39,13 @@ public class GroundSpawner : MonoBehaviour
         groundStasiun.SetActive(false);
 
         waveManager = FindFirstObjectByType<WaveManager>();
+
+        // Cari CactusSpawner otomatis kalau belum diisi
+        if (cactusSpawner == null)
+        {
+            cactusSpawner =
+                FindFirstObjectByType<CactusSpawner>();
+        }
     }
 
     void Update()
@@ -104,6 +114,14 @@ public class GroundSpawner : MonoBehaviour
             if (waveManager != null &&
                 waveManager.SemuaMusuhMati())
             {
+                // ==============================
+                // KAKTUS STOP
+                // ==============================
+                if (cactusSpawner != null)
+                {
+                    cactusSpawner.StopKaktus();
+                }
+
                 groundLewat++;
 
                 Debug.Log(
@@ -152,9 +170,6 @@ public class GroundSpawner : MonoBehaviour
         stasiunBerjalan = false;
         diStasiun = true;
 
-        // TIDAK mengubah posisi Z lagi.
-        // Posisi terakhir stasiun dipertahankan.
-
         Debug.Log(
             "🚉 BERHENTI! Offset: "
             + offsetBerhenti
@@ -181,6 +196,7 @@ public class GroundSpawner : MonoBehaviour
         groundBiasa.SetActive(true);
 
         // WAVE BELUM DIMULAI DI SINI!
+        // Kaktus juga BELUM dimulai di sini!
     }
 
 
@@ -203,7 +219,7 @@ public class GroundSpawner : MonoBehaviour
             groundLewat = 0;
 
             // ==================================
-            // BARU SEKARANG WAVE BARU SPAWN
+            // WAVE BARU
             // ==================================
             if (waveManager != null)
             {
@@ -212,6 +228,18 @@ public class GroundSpawner : MonoBehaviour
                 );
 
                 waveManager.MulaiWaveBerikutnya();
+            }
+
+            // ==================================
+            // KAKTUS MULAI LAGI
+            // ==================================
+            if (cactusSpawner != null)
+            {
+                Debug.Log(
+                    "🌵 STASIUN HILANG → KAKTUS MULAI LAGI!"
+                );
+
+                cactusSpawner.MulaiKaktus();
             }
         }
     }

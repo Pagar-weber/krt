@@ -127,6 +127,60 @@ Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 32c17cd418e57d5488c140b597edc152, type: 3}
   m_PrefabInstance: {fileID: 1957167091}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &588545350
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 588545352}
+  - component: {fileID: 588545351}
+  m_Layer: 0
+  m_Name: CactusSpawner
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &588545351
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 588545350}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1367e608d3ad7444793bcc7e24967091, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cactusPrefab: {fileID: 1047973717829514298, guid: 32a39bab2094f4342bbb53733f2a3f5a, type: 3}
+  player: {fileID: 1917353304}
+  moveSpeed: 30
+  jumlahKaktus: 30
+  minJarakDepan: 10
+  maxJarakDepan: 180
+  minJarakSamping: 12
+  maxJarakSamping: 25
+  posisiY: 1.01
+  jarakBelakang: 300
+--- !u!4 &588545352
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 588545350}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 75, y: 1, z: 200}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &705507993
 GameObject:
   m_ObjectHideFlags: 0
@@ -258,6 +312,7 @@ MonoBehaviour:
   jarakStasiun: 280
   offsetBerhenti: -3
   jarakKeluarStasiun: 320
+  cactusSpawner: {fileID: 588545351}
 --- !u!4 &894658577
 Transform:
   m_ObjectHideFlags: 0
@@ -795,6 +850,7 @@ SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
   - {fileID: 705507995}
+  - {fileID: 588545352}
   - {fileID: 3221729300190047710}
   - {fileID: 894658577}
   - {fileID: 963194228}
