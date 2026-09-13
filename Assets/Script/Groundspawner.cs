@@ -2,23 +2,226 @@ using UnityEngine;
 
 public class GroundSpawner : MonoBehaviour
 {
-    public Transform ground;
+    [Header("Ground")]
+    public GameObject groundBiasa;
+    public GameObject groundStasiun;
+
+    [Header("Player")]
     public Transform player;
 
-    public float groundLength = 100f;
+    [Header("Setting")]
     public float moveSpeed = 10f;
-    public float repeatDistance = 100f;
+    public float groundLength = 100f;
+
+    [Header("Jarak Stasiun")]
+    public float jarakStasiun = 200f;
+
+    [Header("Posisi Berhenti Stasiun")]
+    public float offsetBerhenti = -5f;
+
+    [Header("Jarak Stasiun Keluar")]
+    public float jarakKeluarStasiun = 250f;
+
+    private int groundLewat = 0;
+
+    private bool stasiunBerjalan = false;
+    private bool diStasiun = false;
+    private bool keluarStasiun = false;
+
+    private WaveManager waveManager;
+
+    void Start()
+    {
+        groundBiasa.SetActive(true);
+        groundStasiun.SetActive(false);
+
+        waveManager = FindFirstObjectByType<WaveManager>();
+    }
 
     void Update()
     {
-        // Ground bergerak mundur
-        ground.Translate(Vector3.back * moveSpeed * Time.deltaTime);
-
-        // Kalau ground sudah terlalu jauh di belakang player
-        if (ground.position.z <= player.position.z - repeatDistance)
+        // ==================================
+        // SUDAH DI STASIUN
+        // ==================================
+        if (diStasiun)
         {
-            // Pindahkan ground ke depan
-            ground.position += Vector3.forward * groundLength;
+            if (Input.GetKeyDown(KeyCode.Space))
+            {
+                KeluarStasiun();
+            }
+
+            return;
         }
+
+        // ==================================
+        // GROUND BIASA BERGERAK
+        // ==================================
+        groundBiasa.transform.position +=
+            Vector3.back * moveSpeed * Time.deltaTime;
+
+
+        // ==================================
+        // STASIUN BERGERAK
+        // ==================================
+        if (stasiunBerjalan || keluarStasiun)
+        {
+            groundStasiun.transform.position +=
+                Vector3.back * moveSpeed * Time.deltaTime;
+
+            // ==================================
+            // STASIUN SEDANG DATANG
+            // ==================================
+            if (stasiunBerjalan &&
+                groundStasiun.transform.position.z <=
+                player.position.z + offsetBerhenti)
+            {
+                SampaiStasiun();
+            }
+
+            return;
+        }
+
+
+        // ==================================
+        // GROUND BIASA BERGANTI
+        // ==================================
+        if (groundBiasa.transform.position.z <=
+            player.position.z - groundLength)
+        {
+            Vector3 posisi =
+                groundBiasa.transform.position;
+
+            posisi.z += groundLength;
+
+            groundBiasa.transform.position =
+                posisi;
+
+            Debug.Log("GROUND BERGANTI");
+
+            // ==================================
+            // CEK SEMUA MUSUH MATI
+            // ==================================
+            if (waveManager != null &&
+                waveManager.SemuaMusuhMati())
+            {
+                groundLewat++;
+
+                Debug.Log(
+                    "Ground setelah semua musuh mati: "
+                    + groundLewat + "/2"
+                );
+
+                if (groundLewat >= 2)
+                {
+                    MunculkanStasiun();
+                }
+            }
+        }
+    }
+
+
+    // ==================================
+    // STASIUN MUNCUL DI DEPAN
+    // ==================================
+    void MunculkanStasiun()
+    {
+        Debug.Log("🚉 STASIUN MUNCUL DI DEPAN!");
+
+        stasiunBerjalan = true;
+
+        Vector3 posisi =
+            groundStasiun.transform.position;
+
+        posisi.z =
+            player.position.z + jarakStasiun;
+
+        groundStasiun.transform.position =
+            posisi;
+
+        groundStasiun.SetActive(true);
+    }
+
+
+    // ==================================
+    // SAMPAI STASIUN
+    // ==================================
+    void SampaiStasiun()
+    {
+        Debug.Log("🚉 SAMPAI STASIUN!");
+
+        stasiunBerjalan = false;
+        diStasiun = true;
+
+        // TIDAK mengubah posisi Z lagi.
+        // Posisi terakhir stasiun dipertahankan.
+
+        Debug.Log(
+            "🚉 BERHENTI! Offset: "
+            + offsetBerhenti
+            + " | Z Stasiun: "
+            + groundStasiun.transform.position.z
+            + " | Z Kereta: "
+            + player.position.z
+        );
+    }
+
+
+    // ==================================
+    // SPACE
+    // ==================================
+    void KeluarStasiun()
+    {
+        Debug.Log("SPACE → KELUAR STASIUN");
+
+        diStasiun = false;
+
+        // Stasiun mulai bergerak keluar
+        keluarStasiun = true;
+
+        groundBiasa.SetActive(true);
+
+        // WAVE BELUM DIMULAI DI SINI!
+    }
+
+
+    // ==================================
+    // CEK STASIUN SUDAH KELUAR
+    // ==================================
+    void CekStasiunKeluar()
+    {
+        if (!keluarStasiun)
+            return;
+
+        if (groundStasiun.transform.position.z <
+            player.position.z - jarakKeluarStasiun)
+        {
+            Debug.Log("🚉 STASIUN KELUAR LAYAR → OFF");
+
+            groundStasiun.SetActive(false);
+
+            keluarStasiun = false;
+            groundLewat = 0;
+
+            // ==================================
+            // BARU SEKARANG WAVE BARU SPAWN
+            // ==================================
+            if (waveManager != null)
+            {
+                Debug.Log(
+                    "🔥 STASIUN HILANG → WAVE BARU DIMULAI!"
+                );
+
+                waveManager.MulaiWaveBerikutnya();
+            }
+        }
+    }
+
+
+    // ==================================
+    // LATE UPDATE
+    // ==================================
+    void LateUpdate()
+    {
+        CekStasiunKeluar();
     }
 }

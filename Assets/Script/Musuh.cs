@@ -26,6 +26,7 @@ public class Musuh : MonoBehaviour
     {
         Debug.Log("Musuh mati!");
 
+        // Beri tahu WaveManager
         WaveManager waveManager =
             FindFirstObjectByType<WaveManager>();
 
