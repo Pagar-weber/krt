@@ -864,19 +864,23 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3639187727710313674, guid: eb626257558084f4c8ab8abad276debb, type: 3}
       propertyPath: fireRate
-      value: 0.1
+      value: 0.0001
       objectReference: {fileID: 0}
     - target: {fileID: 3639187727710313674, guid: eb626257558084f4c8ab8abad276debb, type: 3}
       propertyPath: firePoint
       value: 
       objectReference: {fileID: 1497877195}
     - target: {fileID: 3639187727710313674, guid: eb626257558084f4c8ab8abad276debb, type: 3}
+      propertyPath: bulletSpeed
+      value: 100
+      objectReference: {fileID: 0}
+    - target: {fileID: 3639187727710313674, guid: eb626257558084f4c8ab8abad276debb, type: 3}
       propertyPath: bulletPrefab
       value: 
       objectReference: {fileID: 200184138164725436, guid: 9cd2dafe8f9dc684faec4d9c7f88c9f7, type: 3}
     - target: {fileID: 3639187727710313674, guid: eb626257558084f4c8ab8abad276debb, type: 3}
       propertyPath: rotationSpeed
-      value: 1000
+      value: 10000
       objectReference: {fileID: 0}
     - target: {fileID: 6321103162968800585, guid: eb626257558084f4c8ab8abad276debb, type: 3}
       propertyPath: m_LocalPosition.x
