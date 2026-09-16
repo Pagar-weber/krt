@@ -25,62 +25,122 @@ public class GroundSpawner : MonoBehaviour
     [Header("Cactus")]
     public CactusSpawner cactusSpawner;
 
+    [Header("Jeda Wave Setelah Kaktus")]
+    public float jedaWave = 3f;
+
+    [Header("Panel Stasiun")]
+    public StasiunPanel stationPanel;
+
     private int groundLewat = 0;
 
     private bool stasiunBerjalan = false;
     private bool diStasiun = false;
     private bool keluarStasiun = false;
 
+    private bool menungguWave = false;
+    private float timerWave = 0f;
+
     private WaveManager waveManager;
+
+
+    // ==================================
+    // START
+    // ==================================
 
     void Start()
     {
+        Time.timeScale = 1f;
+
         groundBiasa.SetActive(true);
         groundStasiun.SetActive(false);
 
-        waveManager = FindFirstObjectByType<WaveManager>();
+        waveManager =
+            FindFirstObjectByType<WaveManager>();
 
-        // Cari CactusSpawner otomatis kalau belum diisi
         if (cactusSpawner == null)
         {
             cactusSpawner =
                 FindFirstObjectByType<CactusSpawner>();
         }
+
+        if (stationPanel == null)
+        {
+            stationPanel =
+                FindFirstObjectByType<StasiunPanel>();
+        }
     }
+
+
+    // ==================================
+    // UPDATE
+    // ==================================
 
     void Update()
     {
         // ==================================
-        // SUDAH DI STASIUN
+        // WAVE MENUNGGU SETELAH KAKTUS
         // ==================================
+
+        if (menungguWave)
+        {
+            timerWave += Time.deltaTime;
+
+            if (timerWave >= jedaWave)
+            {
+                menungguWave = false;
+                timerWave = 0f;
+
+                if (waveManager != null)
+                {
+                    Debug.Log(
+                        "🔥 KAKTUS SUDAH JALAN → WAVE BARU!"
+                    );
+
+                    waveManager.MulaiWaveBerikutnya();
+                }
+            }
+        }
+
+
+        // ==================================
+        // DI STASIUN
+        // ==================================
+
         if (diStasiun)
         {
-            if (Input.GetKeyDown(KeyCode.Space))
-            {
-                KeluarStasiun();
-            }
+            // Tidak pakai Space lagi.
+            // Keluar lewat tombol panel.
 
             return;
         }
 
+
         // ==================================
-        // GROUND BIASA BERGERAK
+        // GROUND BIASA
         // ==================================
+
         groundBiasa.transform.position +=
-            Vector3.back * moveSpeed * Time.deltaTime;
+            Vector3.back *
+            moveSpeed *
+            Time.deltaTime;
 
 
         // ==================================
         // STASIUN BERGERAK
         // ==================================
+
         if (stasiunBerjalan || keluarStasiun)
         {
             groundStasiun.transform.position +=
-                Vector3.back * moveSpeed * Time.deltaTime;
+                Vector3.back *
+                moveSpeed *
+                Time.deltaTime;
+
 
             // ==================================
-            // STASIUN SEDANG DATANG
+            // STASIUN DATANG
             // ==================================
+
             if (stasiunBerjalan &&
                 groundStasiun.transform.position.z <=
                 player.position.z + offsetBerhenti)
@@ -95,6 +155,7 @@ public class GroundSpawner : MonoBehaviour
         // ==================================
         // GROUND BIASA BERGANTI
         // ==================================
+
         if (groundBiasa.transform.position.z <=
             player.position.z - groundLength)
         {
@@ -108,26 +169,40 @@ public class GroundSpawner : MonoBehaviour
 
             Debug.Log("GROUND BERGANTI");
 
+
             // ==================================
-            // CEK SEMUA MUSUH MATI
+            // CEK MUSUH
             // ==================================
+
             if (waveManager != null &&
                 waveManager.SemuaMusuhMati())
             {
-                // ==============================
-                // KAKTUS STOP
-                // ==============================
-                if (cactusSpawner != null)
+                // ==================================
+                // CEK KAKTUS
+                // ==================================
+
+                if (cactusSpawner != null &&
+                    !cactusSpawner.SemuaKaktusHabis())
                 {
-                    cactusSpawner.StopKaktus();
+                    Debug.Log(
+                        "⏳ Musuh habis, kaktus masih jalan..."
+                    );
+
+                    return;
                 }
+
+
+                // ==================================
+                // SEMUA HABIS
+                // ==================================
 
                 groundLewat++;
 
                 Debug.Log(
-                    "Ground setelah semua musuh mati: "
+                    "👾 MUSUH HABIS + 🌵 KAKTUS HABIS | Ground: "
                     + groundLewat + "/2"
                 );
+
 
                 if (groundLewat >= 2)
                 {
@@ -139,11 +214,14 @@ public class GroundSpawner : MonoBehaviour
 
 
     // ==================================
-    // STASIUN MUNCUL DI DEPAN
+    // MUNCULKAN STASIUN
     // ==================================
+
     void MunculkanStasiun()
     {
-        Debug.Log("🚉 STASIUN MUNCUL DI DEPAN!");
+        Debug.Log(
+            "🚉 SEMUA SYARAT TERPENUHI → STASIUN MUNCUL!"
+        );
 
         stasiunBerjalan = true;
 
@@ -151,7 +229,8 @@ public class GroundSpawner : MonoBehaviour
             groundStasiun.transform.position;
 
         posisi.z =
-            player.position.z + jarakStasiun;
+            player.position.z +
+            jarakStasiun;
 
         groundStasiun.transform.position =
             posisi;
@@ -163,84 +242,116 @@ public class GroundSpawner : MonoBehaviour
     // ==================================
     // SAMPAI STASIUN
     // ==================================
+
     void SampaiStasiun()
     {
-        Debug.Log("🚉 SAMPAI STASIUN!");
+        Debug.Log(
+            "🚉 SAMPAI STASIUN!"
+        );
 
         stasiunBerjalan = false;
         diStasiun = true;
 
-        Debug.Log(
-            "🚉 BERHENTI! Offset: "
-            + offsetBerhenti
-            + " | Z Stasiun: "
-            + groundStasiun.transform.position.z
-            + " | Z Kereta: "
-            + player.position.z
-        );
+
+        // ==================================
+        // BUKA PANEL
+        // ==================================
+
+        if (stationPanel != null)
+        {
+            Debug.Log(
+                "📋 MEMBUKA PANEL STASIUN!"
+            );
+
+            stationPanel.BukaPanel();
+        }
+        else
+        {
+            Debug.LogError(
+                "❌ STATION PANEL BELUM TERHUBUNG!"
+            );
+        }
     }
 
 
     // ==================================
-    // SPACE
+    // KELUAR DARI STASIUN
+    // DIPANGGIL TOMBOL
     // ==================================
-    void KeluarStasiun()
-    {
-        Debug.Log("SPACE → KELUAR STASIUN");
 
+    public void LanjutDariStasiun()
+    {
+        if (!diStasiun)
+            return;
+
+
+        Debug.Log(
+            "➡️ TOMBOL DITEKAN → KERETA JALAN!"
+        );
+
+
+        // Pastikan game berjalan lagi
+        Time.timeScale = 1f;
+
+        // Tutup status stasiun
         diStasiun = false;
 
         // Stasiun mulai bergerak keluar
         keluarStasiun = true;
 
         groundBiasa.SetActive(true);
-
-        // WAVE BELUM DIMULAI DI SINI!
-        // Kaktus juga BELUM dimulai di sini!
     }
 
 
     // ==================================
-    // CEK STASIUN SUDAH KELUAR
+    // CEK STASIUN KELUAR
     // ==================================
+
     void CekStasiunKeluar()
     {
         if (!keluarStasiun)
             return;
 
+
         if (groundStasiun.transform.position.z <
             player.position.z - jarakKeluarStasiun)
         {
-            Debug.Log("🚉 STASIUN KELUAR LAYAR → OFF");
+            Debug.Log(
+                "🚉 STASIUN KELUAR LAYAR → OFF"
+            );
 
             groundStasiun.SetActive(false);
 
             keluarStasiun = false;
             groundLewat = 0;
 
-            // ==================================
-            // WAVE BARU
-            // ==================================
-            if (waveManager != null)
-            {
-                Debug.Log(
-                    "🔥 STASIUN HILANG → WAVE BARU DIMULAI!"
-                );
-
-                waveManager.MulaiWaveBerikutnya();
-            }
 
             // ==================================
-            // KAKTUS MULAI LAGI
+            // KAKTUS MUNCUL DULU
             // ==================================
+
             if (cactusSpawner != null)
             {
                 Debug.Log(
-                    "🌵 STASIUN HILANG → KAKTUS MULAI LAGI!"
+                    "🌵 STASIUN HILANG → KAKTUS MUNCUL DULU!"
                 );
 
                 cactusSpawner.MulaiKaktus();
             }
+
+
+            // ==================================
+            // WAVE DITUNDA
+            // ==================================
+
+            menungguWave = true;
+            timerWave = 0f;
+
+            Debug.Log(
+                "⏳ WAVE DITUNDA " +
+                jedaWave +
+                " DETIK"
+            );
         }
     }
 
@@ -248,6 +359,7 @@ public class GroundSpawner : MonoBehaviour
     // ==================================
     // LATE UPDATE
     // ==================================
+
     void LateUpdate()
     {
         CekStasiunKeluar();

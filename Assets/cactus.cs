@@ -16,8 +16,8 @@ public class CactusSpawner : MonoBehaviour
     public int jumlahKaktus = 8;
 
     [Header("Jarak Spawn Depan")]
-    public float minJarakDepan = 80f;
-    public float maxJarakDepan = 180f;
+    public float minJarakDepan = 150f;
+    public float maxJarakDepan = 250f;
 
     [Header("Jarak Samping")]
     public float minJarakSamping = 12f;
@@ -44,7 +44,6 @@ public class CactusSpawner : MonoBehaviour
         if (!aktif)
             return;
 
-        // Dari belakang ke depan list
         for (int i = cactusList.Count - 1; i >= 0; i--)
         {
             GameObject cactus = cactusList[i];
@@ -55,11 +54,17 @@ public class CactusSpawner : MonoBehaviour
                 continue;
             }
 
-            // Kaktus jalan terus ke belakang
+            // ==================================
+            // KAKTUS JALAN KE BELAKANG
+            // ==================================
+
             cactus.transform.position +=
                 Vector3.back * moveSpeed * Time.deltaTime;
 
-            // Kalau sudah benar-benar keluar layar
+            // ==================================
+            // KAKTUS KELUAR LAYAR
+            // ==================================
+
             if (cactus.transform.position.z <
                 player.position.z - jarakBelakang)
             {
@@ -70,6 +75,13 @@ public class CactusSpawner : MonoBehaviour
                     "🌵 Kaktus keluar. Sisa: "
                     + cactusList.Count
                 );
+
+                if (cactusList.Count == 0)
+                {
+                    Debug.Log(
+                        "🌵 SEMUA KAKTUS SUDAH KELUAR!"
+                    );
+                }
             }
         }
     }
@@ -91,6 +103,11 @@ public class CactusSpawner : MonoBehaviour
 
             cactusList.Add(cactus);
         }
+
+        Debug.Log(
+            "🌵 " + jumlahKaktus +
+            " KAKTUS MUNCUL DARI DEPAN!"
+        );
     }
 
     // ==================================
@@ -134,37 +151,30 @@ public class CactusSpawner : MonoBehaviour
     }
 
     // ==================================
-    // STOP KAKTUS
-    // ==================================
-
-    public void StopKaktus()
-    {
-        aktif = false;
-
-        Debug.Log("🌵 KAKTUS STOP");
-    }
-
-    // ==================================
-    // MULAI KAKTUS LAGI
+    // MULAI BATCH BARU
     // ==================================
 
     public void MulaiKaktus()
     {
-        // Bersihkan list kalau ada object null
+        aktif = true;
+
+        // Bersihkan object yang sudah null
         for (int i = cactusList.Count - 1; i >= 0; i--)
         {
             if (cactusList[i] == null)
+            {
                 cactusList.RemoveAt(i);
+            }
         }
 
-        aktif = true;
-
-        // Kalau sudah habis, buat batch baru
+        // Kalau sudah habis, spawn batch baru
         if (cactusList.Count == 0)
         {
             SpawnAwal();
 
-            Debug.Log("🌵 KAKTUS BATCH BARU DIMULAI!");
+            Debug.Log(
+                "🌵 BATCH KAKTUS BARU → DARI DEPAN!"
+            );
         }
     }
 }
