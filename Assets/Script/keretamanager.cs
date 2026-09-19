@@ -3,35 +3,42 @@ using System.Collections.Generic;
 
 public class KeretaManager : MonoBehaviour
 {
-    public GameObject gerbongPrefab;
+    [Header("Semua Jenis Gerbong")]
+    public GameObject[] gerbongPrefabs;
+
+    [Header("Kereta")]
     public Transform kepalaKereta;
 
     public float jarakGerbong = 5f;
 
-    private List<Transform> gerbongList = new List<Transform>();
+    private List<Transform> gerbongList =
+        new List<Transform>();
 
-    void Update()
+    // Dipanggil saat player dapat kesempatan upgrade
+    public void RandomGerbong()
     {
-        if (Input.GetKeyDown(KeyCode.E))
+        if (gerbongPrefabs == null ||
+            gerbongPrefabs.Length == 0)
         {
-            SpawnGerbong();
+            Debug.LogError("❌ Gerbong prefab belum diisi!");
+            return;
         }
-    }
 
-    void SpawnGerbong()
-    {
+        GameObject prefab =
+            gerbongPrefabs[
+                Random.Range(0, gerbongPrefabs.Length)
+            ];
+
         Vector3 spawnPosition;
 
         if (gerbongList.Count == 0)
         {
-            // Gerbong pertama → di belakang kepala kereta
             spawnPosition =
                 kepalaKereta.position -
                 kepalaKereta.forward * jarakGerbong;
         }
         else
         {
-            // Gerbong berikutnya → di belakang gerbong terakhir
             Transform gerbongTerakhir =
                 gerbongList[gerbongList.Count - 1];
 
@@ -41,11 +48,16 @@ public class KeretaManager : MonoBehaviour
         }
 
         GameObject gerbongBaru = Instantiate(
-            gerbongPrefab,
+            prefab,
             spawnPosition,
             kepalaKereta.rotation
         );
 
         gerbongList.Add(gerbongBaru.transform);
+
+        Debug.Log(
+            "🚃 GERBONG RANDOM TERPILIH: " +
+            prefab.name
+        );
     }
 }

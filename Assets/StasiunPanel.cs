@@ -6,12 +6,18 @@ public class StasiunPanel : MonoBehaviour
     public GameObject panel;
 
     private GroundSpawner groundSpawner;
+    private KeretaManager keretaManager;
+
+    private bool sudahPilihGerbong = false;
 
     void Awake()
     {
-        groundSpawner = FindFirstObjectByType<GroundSpawner>();
+        groundSpawner =
+            FindFirstObjectByType<GroundSpawner>();
 
-        // Kalau belum diisi, anggap GameObject ini adalah panelnya
+        keretaManager =
+            FindFirstObjectByType<KeretaManager>();
+
         if (panel == null)
         {
             panel = gameObject;
@@ -20,58 +26,54 @@ public class StasiunPanel : MonoBehaviour
         panel.SetActive(false);
     }
 
-    // ==================================
-    // BUKA PANEL
-    // ==================================
+    void Update()
+    {
+        // Hanya bisa R ketika panel sedang terbuka
+        if (!panel.activeSelf)
+            return;
+
+        if (Input.GetKeyDown(KeyCode.R))
+        {
+            PilihGerbongRandom();
+        }
+    }
 
     public void BukaPanel()
     {
         Debug.Log("📋 PANEL STASIUN DIBUKA!");
+
+        sudahPilihGerbong = false;
 
         panel.SetActive(true);
 
         Time.timeScale = 0f;
     }
 
-    // ==================================
-    // UPGRADE
-    // ==================================
-
-    public void UpgradeTurret()
+    void PilihGerbongRandom()
     {
-        Debug.Log("🔫 PILIH UPGRADE TURRET");
+        if (sudahPilihGerbong)
+        {
+            Debug.Log("❌ R SUDAH DIGUNAKAN DI STASIUN INI!");
+            return;
+        }
 
-        TutupDanLanjut();
+        if (keretaManager == null)
+        {
+            Debug.LogError("❌ KeretaManager tidak ditemukan!");
+            return;
+        }
+
+        sudahPilihGerbong = true;
+
+        keretaManager.RandomGerbong();
+
+        Debug.Log("🎲 RANDOM GERBONG BERHASIL!");
     }
-
-    // ==================================
-    // GERBONG
-    // ==================================
-
-    public void TambahGerbong()
-    {
-        Debug.Log("🚃 PILIH TAMBAH GERBONG");
-
-        TutupDanLanjut();
-    }
-
-    // ==================================
-    // LANJUT
-    // ==================================
 
     public void Lanjut()
     {
-        Debug.Log("➡️ PILIH LANJUT");
+        Debug.Log("➡️ TOMBOL LANJUT DITEKAN!");
 
-        TutupDanLanjut();
-    }
-
-    // ==================================
-    // TUTUP + KELUAR STASIUN
-    // ==================================
-
-    void TutupDanLanjut()
-    {
         Time.timeScale = 1f;
 
         panel.SetActive(false);
@@ -80,5 +82,19 @@ public class StasiunPanel : MonoBehaviour
         {
             groundSpawner.LanjutDariStasiun();
         }
+    }
+
+    public void UpgradeTurret()
+    {
+        Debug.Log("🔫 UPGRADE TURRET");
+
+        Lanjut();
+    }
+
+    public void TambahGerbong()
+    {
+        // Kalau tombol ini masih mau dipakai,
+        // langsung random gerbong juga.
+        PilihGerbongRandom();
     }
 }
